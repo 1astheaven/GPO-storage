@@ -1,2 +1,2 @@
-# GPO-and-IOT-storage
+# GPO storage
 Репозиторий для файлов с ГПО
