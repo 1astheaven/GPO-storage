@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <title>Title</title>
+{% endblock title %}
+{% block links %}
+
+{% endblock links %}
+
+
+{% block content %}
+
+<nav class="navbar" role="navigation" data-target="navbarBasic" aria-label="main navigation">
+
+  <div id="navbarBasic" class="navbar-menu">
+    <div class="navbar-start">
+      <a class="navbar-item" id="t1">
+        Подключенные устройства
+      </a>
+
+      <a class="navbar-item" id="t2">
+        Список пользователей
+      </a>
+    </div>
+
+    <div class="navbar-end">
+      <div class="navbar-item">
+
+        <div class="buttons">
+            {% if context.is_can_create_user %}
+            <a class="button is-light" href="/create_user/">
+            Создать учетную запись
+          </a>
+            {% endif %}
+            {% if context.is_can_add_device %}
+            <a class="button is-light" href="/add_device/">
+            Добавить устройство
+          </a>
+            {% endif %}
+          <a class="button is-light" href="/logout/">
+            Выход
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+{% set flash_msg = get_flashed_messages(with_categories=true) %}
+{% if flash_msg %}
+    {% for category, message in flash_msg %}
+        <span class="{{ category }}">{{ message }}</span>
+    {% endfor %}
+{% endif %}
+<div class="box">
+    {% if context.devices_list %}
+        <table class="table is-bordered" id="tableDevs">
+      <thead>
+        <tr>
+            <th>devName</th>
+            <th>AppEui</th>
+            <th>devEui</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for dev_list in context.devices_list %}
+        <tr>
+            <td>{{ dev_list.devName }} </td>
+            <td>{{ dev_list.appEui }} </td>
+            <td><a href="dev_graph/{{ dev_list.devEui }}/48">{{ dev_list.devEui }}</a> </td>
+            {% if context.is_can_delete_device %}
+            <td>
+                <a href="delete_device/{{ dev_list.devEui }}">Удалить</a>
+            </td>
+            {% endif %}
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p>
+        Подключенных устройств нет
+    </p>
+    {% endif %}
+
+    {% if context.user_list %}
+        <table class="table is-bordered hide" id="tableUsers">
+      <thead>
+        <tr>
+            <th>Login</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for user in context.user_list %}
+        <tr>
+            <td>{{ user.login }} </td>
+            {% if context.is_can_delete_user%}
+            <td>
+                <a href="delete_user/{{ user.login }}">Удалить</a>
+            </td>
+            {% endif %}
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p>
+        Пользователей нет
+    </p>
+    {% endif %}
+    <footer class="footer">
+      <div class="content has-text-centered">
+          <div id="current_date_time_block2"></div>
+          <strong>Город: Томск</strong>
+      </div>
+    </footer>
+</div>
+{% endblock content%}
+{% block scripts %}
+    <script>
+        t1.onclick = function() {
+          document.getElementById('tableDevs').classList.remove('hide');
+          document.getElementById('tableUsers').classList.add('hide');
+        }
+
+        t2.onclick = function() {
+          document.getElementById('tableUsers').classList.remove('hide');
+          document.getElementById('tableDevs').classList.add('hide');
+        }
+    </script>
+
+    <script type="text/javascript">
+
+    /* функция добавления ведущих нулей */
+    /* (если число меньше десяти, перед числом добавляем ноль) */
+    function zero_first_format(value)
+    {
+        if (value < 10)
+        {
+            value='0'+value;
+        }
+        return value;
+    }
+
+    /* функция получения текущей даты и времени */
+    function date_time()
+    {
+        var current_datetime = new Date();
+        var day = zero_first_format(current_datetime.getDate());
+        var month = zero_first_format(current_datetime.getMonth()+1);
+        var year = current_datetime.getFullYear();
+        var hours = zero_first_format(current_datetime.getHours());
+        var minutes = zero_first_format(current_datetime.getMinutes());
+        var seconds = zero_first_format(current_datetime.getSeconds());
+
+        return day+"."+month+"."+year+" "+hours+":"+minutes+":"+seconds;
+    }
+
+    /* выводим текущую дату и время на сайт в блок с id "current_date_time_block" */
+    document.getElementById('current_date_time_block').innerHTML = date_time();
+    </script>
+
+<script type="text/javascript">
+
+    /* каждую секунду получаем текущую дату и время */
+    /* и вставляем значение в блок с id "current_date_time_block2" */
+    setInterval(function () {
+        document.getElementById('current_date_time_block2').innerHTML = date_time();
+    }, 1000);
+</script>
+{% endblock scripts%}
