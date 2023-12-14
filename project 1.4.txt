@@ -15,7 +15,7 @@ int main()
     int len;
     len = snprintf(buffer, sizeof(buffer), "at+join\r\n");
     dev.write(buffer,len);
-    dev.read(buffer, '\n');
+    //dev.read(buffer, '\n');
     ThisThread::sleep_for(5s);
 
     while (1) 
@@ -27,7 +27,7 @@ int main()
         len = snprintf(buffer, sizeof(buffer), "at+send=lora:5:%d\n\r", data2);
         //len = snprintf(buffer, sizeof(buffer), "Data: %d\r\n", data);
         dev.write(buffer, len);
-        dev.read(buffer, '\n');
+        //dev.read(buffer, '\n');
 
         //len = snprintf(buffer, sizeof(buffer), "at+set_config=device:sleep:1\n\r");
         //dev.write(buffer, len);
