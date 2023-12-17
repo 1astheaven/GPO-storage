@@ -1,0 +1,31 @@
+#include "mbed.h"
+#include "BME280.h"
+
+BME280 sensor_bme(I2C_SDA, I2C_SCL);
+
+int temperature;
+int pressure;
+int humidity;
+
+int main()
+{
+    sensor_bme.initialize();
+    while(1) 
+    {
+        printf("--------------\n");
+        printf("temp %i\n", sensor_bme.getTemperature());
+        printf("--------------\n");
+        printf("\n");
+
+        printf("--------------\n");
+        printf("%i\n", sensor_bme.getPressure());
+        printf("\n");
+        printf("--------------\n");
+        printf("--------------\n");
+
+        printf("%i\n", sensor_bme.getHumidity());
+        printf("\n");
+        printf("--------------\n");
+        ThisThread::sleep_for(10s);
+    }
+}
